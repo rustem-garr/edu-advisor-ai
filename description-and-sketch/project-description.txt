@@ -1,0 +1,82 @@
+Project Name: EduAdvisor AI
+
+EduAdvisor AI: application designed to eliminate 
+the overwhelming and unstructured nature of self-learning. 
+It acts as a personal academic advisor, guiding users by creating customized, 
+step by step learning roadmaps for desired skill or subject area.
+
+Problem Solved: Today's learners have access to limitless online resources, 
+but this abundance often leads to confusion where to start, what to learn next, 
+or which resources are credible. 
+
+Our Solution:
+A user logs into EduAdvisor AI and specifies a learning objective 
+(ex.: "I want to become a backend developer"). 
+AI Agent, initiates a conversation 
+to assess the user's existing knowledge and learning preferences.
+To provide high quality, relevant content, the agent utilizes 
+Retrieval Augmented Generation(RAG).The agent then organizes 
+the retrieved information into a logical, sequential learning path, 
+which is presented to the user as a final roadmap, 
+allowing them to track their progress and stay motivated.
+
+MongoDB Schema:
+import { Schema, model, Types } from 'mongoose';
+
+// user
+const resourceSchema = new Schema({
+    type: String,
+    title: String,
+    url: String,
+}); 
+
+const stepSchema = new Schema({
+    stepNumber: Number,
+    title: String,
+    description: String,
+    resources: [resourceSchema],
+    isCompleted: { type: Boolean, default: false },
+});
+
+const roadmapSchema = new Schema({
+    topic: { type: String, required: true },
+    userInput: {
+        experienceLevel: { type: String, required: true },
+        learningStyle: { type: String, required: true },
+    },
+    steps: [stepSchema],
+}, {
+    timestamps: true 
+});
+
+const userSchema = new Schema({
+    email: { type: String, unique: true, required: true },
+    password: { type: String, required: true },
+    roadmaps: [roadmapSchema] 
+}, {
+    timestamps: true
+});
+
+export const UserModel = model('user', userSchema);
+
+// RAG vector embeddings
+export type LearningResource = {
+    _id: Types.ObjectId;
+    source: string;
+    topic: string;
+    chunkText: string;
+    embedding: number[];
+    createdAt: Date;
+    updatedAt: Date;
+};
+
+const learningResourceSchema = new Schema<LearningResource>({
+    source: { type: String, required: true },
+    topic: { type: String, required: true, index: true },
+    chunkText: { type: String, required: true },
+    embedding: { type: [Number], required: true },
+}, {
+    timestamps: true
+});
+
+export const LearningResourceModel = model<LearningResource>('learning_resource', learningResourceSchema);
