@@ -73,3 +73,34 @@ export const getRoadmaps: RequestHandler = async(req, res, next) =>{
         next(error);
     }
 }
+
+type AddRoadmapBody = {
+    topic:string,
+    userInput: {
+        experienceLevel:string,
+        learningStyle:string,
+    }
+}
+
+export const addRoadmap:RequestHandler<unknown, StandardResponse<unknown>, AddRoadmapBody, unknown> = async(req, res, next)=>{
+    try{
+        const userId = req.user!.userId;
+        const {topic, userInput} = req.body;
+
+        const user = await UserModel.findOne({_id:userId});
+        if(!user){
+            throw new ErrorWithStatus('User not found', 404);
+        }
+        user.roadmaps.push({
+            topic,
+            userInput,
+            steps:[]
+        });
+        await user.save();
+        const createdRoadmap = user.roadmaps[user.roadmaps.length-1];
+        res.status(201).json({success:true, data:createdRoadmap});
+    }
+    catch(error){
+        next(error);
+    }
+}
