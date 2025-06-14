@@ -1,65 +1,61 @@
-import { Request, Response } from "express";
+import { RequestHandler } from "express";
 import bcrypt from 'bcryptjs';
 import { UserModel } from "./user.model";
 import jwt from "jsonwebtoken";
+import { UserCredentials, AuthTokens, StandardResponse, ErrorWithStatus } from "../utils/common";
 
-export const registerUser = async (req:Request, res:Response) => {
-    try{
-        const {email, password} = req.body;
+export const registerUser: RequestHandler<unknown, StandardResponse<{ message: string }>, UserCredentials, unknown> = async (req, res, next) => {
+    try {
+        const { email, password } = req.body;
 
-        const existingUser = await UserModel.findOne({email});
-        if(existingUser){
-            res.status(400).json({message:'User with this email already exist'});
-            return
+        const existingUser = await UserModel.findOne({ email });
+        if (existingUser) {
+            throw new ErrorWithStatus('User with this email already exists', 409); //409 Conflict status code
         }
+
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const user = await UserModel.create({
+        await UserModel.create({
             email,
-            password:hashedPassword
+            password: hashedPassword
         });
 
-        res.status(201).json({message:'User registered successfully'});
+        res.status(201).json({ success: true, data: { message: 'User registered successfully' } });
+    } catch (error) {
+        next(error);
     }
-    catch(error){
-        if (error instanceof Error){
-            res.status(500).json({message:error.message});
-        }
-        else{
-            res.status(500).json({message:'unknown error occured'});
-        }
-    }
-}
+};
 
-export const loginUser = async (req:Request, res:Response) => {
-    try{
-        const {email, password} = req.body;
-        const user = await UserModel.findOne({email});
-        if(!user){
-            res.status(401).json({message:'Invalid email'});
+export const loginUser: RequestHandler<unknown, StandardResponse<AuthTokens>, UserCredentials, unknown> = async (req, res, next) => {
+    try {
+        const { email, password } = req.body;
+        
+        const user = await UserModel.findOne({ email });
+        if (!user) {
+            throw new ErrorWithStatus('Invalid email', 401); 
         }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            throw new ErrorWithStatus('Invalid password', 401);
+        }
+
         const accessToken = jwt.sign(
-            {userId: user!._id},
+            { userId: user._id }, 
             process.env.ACCESS_TOKEN_SECRET!,
-            {expiresIn: '15m'}
+            { expiresIn: '15m' }
         );
 
         const refreshToken = jwt.sign(
-            {userId:user!._id},
+            { userId: user._id },
             process.env.REFRESH_TOKEN_SECRET!,
-            {expiresIn:'7d'}
+            { expiresIn: '7d' }
         );
 
-        res.status(200).json({accessToken, refreshToken});
+        res.status(200).json({ success: true, data: { accessToken, refreshToken } });
 
+    } catch (error) {
+        next(error);
     }
-    catch(error){
-        if (error instanceof Error){
-            res.status(500).json({message:error.message});
-        }
-        else{
-            res.status(500).json({message:'Unknown error occurred'});
-        }
-    }
-}
+};

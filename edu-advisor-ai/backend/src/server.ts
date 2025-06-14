@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import userRoutes from './users/user.routes';
+import { errorHandler, routerNotFoundHandler } from './utils/common';
 
 
 dotenv.config();
@@ -14,6 +15,9 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/users', userRoutes);
+
+app.use(routerNotFoundHandler); //handles non-existent routes
+app.use(errorHandler); //handles all other errors
 
 const connectDB = async() => {
     try{
