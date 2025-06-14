@@ -59,3 +59,17 @@ export const loginUser: RequestHandler<unknown, StandardResponse<AuthTokens>, Us
         next(error);
     }
 };
+
+export const getRoadmaps: RequestHandler = async(req, res, next) =>{
+    try{
+        const userId = req.user!.userId;
+        const user = await UserModel.findOne({_id:userId}, {_id:1, roadmaps:1});
+        if(!user){
+            throw new ErrorWithStatus('User not found', 404);
+        }
+        res.status(200).json({success:true, data:user.roadmaps});
+    }
+    catch(error){
+        next(error);
+    }
+}
