@@ -1,0 +1,17 @@
+[
+  {
+    "source": "Official Docker Docs",
+    "topic": "Docker",
+    "chunkText": "Docker is a platform for developing, shipping, and running applications in containers. Containers allow you to package up an application with all of its dependencies, such as libraries and other binaries, and ship it all out as one package."
+  },
+  {
+    "source": "Python for Beginners Guide",
+    "topic": "Python",
+    "chunkText": "Python's simple, easy-to-learn syntax emphasizes readability and therefore reduces the cost of program maintenance. Python supports modules and packages, which encourages program modularity and code reuse."
+  },
+  {
+    "source": "Node.js Official Website",
+    "topic": "Node.js",
+    "chunkText": "Node.js is an open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser. It's used for building fast and scalable network applications."
+  }
+]
