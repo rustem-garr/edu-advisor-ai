@@ -24,6 +24,22 @@ const roadmapSchema = new Schema({
 }, {
     timestamps: true 
 });
+
+export type Roadmap = {
+    topic: string;
+    userInput: {
+        experienceLevel: string;
+        learningStyle: string;
+    }
+};
+
+export type AddRoadmapBody = {
+    topic: string,
+    userInput: {
+        experienceLevel: string,
+        learningStyle: string,
+    }
+}
  
 
 const userSchema = new Schema({
@@ -33,6 +49,7 @@ const userSchema = new Schema({
 }, {
     timestamps: true
 });
+
 
 export const UserModel =  model("User", userSchema);
 

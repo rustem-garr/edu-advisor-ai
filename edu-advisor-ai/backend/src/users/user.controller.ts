@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import bcrypt from 'bcryptjs';
-import { UserModel } from "./user.model";
+import { AddRoadmapBody, Roadmap, UserModel } from "./user.model";
 import jwt from "jsonwebtoken";
 import { UserCredentials, AuthTokens, StandardResponse, ErrorWithStatus } from "../utils/common";
 
@@ -35,6 +35,7 @@ export const loginUser: RequestHandler<unknown, StandardResponse<AuthTokens>, Us
         if (!user) {
             throw new ErrorWithStatus('Invalid email', 401); 
         }
+        
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
@@ -43,13 +44,13 @@ export const loginUser: RequestHandler<unknown, StandardResponse<AuthTokens>, Us
 
         const accessToken = jwt.sign(
             { userId: user._id }, 
-            process.env.ACCESS_TOKEN_SECRET!,
+            process.env.SECRET!,
             { expiresIn: '15m' }
         );
 
         const refreshToken = jwt.sign(
             { userId: user._id },
-            process.env.REFRESH_TOKEN_SECRET!,
+            process.env.SECRET!,
             { expiresIn: '7d' }
         );
 
@@ -60,9 +61,11 @@ export const loginUser: RequestHandler<unknown, StandardResponse<AuthTokens>, Us
     }
 };
 
-export const getRoadmaps: RequestHandler = async(req, res, next) =>{
+
+export const getRoadmaps: RequestHandler<unknown, StandardResponse<unknown>, unknown, unknown> = async(req, res, next) =>{
     try{
-        const userId = req.user!.userId;
+        // const userId = req.user.userId;
+        const userId = (req as any).user.userId;
         const user = await UserModel.findOne({_id:userId}, {_id:1, roadmaps:1});
         if(!user){
             throw new ErrorWithStatus('User not found', 404);
@@ -74,17 +77,10 @@ export const getRoadmaps: RequestHandler = async(req, res, next) =>{
     }
 }
 
-type AddRoadmapBody = {
-    topic:string,
-    userInput: {
-        experienceLevel:string,
-        learningStyle:string,
-    }
-}
-
-export const addRoadmap:RequestHandler<unknown, StandardResponse<unknown>, AddRoadmapBody, unknown> = async(req, res, next)=>{
+export const addRoadmap:RequestHandler<unknown, StandardResponse<unknown>, AddRoadmapBody, unknown>= async(req, res, next)=>{
     try{
-        const userId = req.user!.userId;
+        // const userId = req.user.userId;
+        const userId = (req as any).user.userId;
         const {topic, userInput} = req.body;
 
         const user = await UserModel.findOne({_id:userId});
@@ -99,6 +95,25 @@ export const addRoadmap:RequestHandler<unknown, StandardResponse<unknown>, AddRo
         await user.save();
         const createdRoadmap = user.roadmaps[user.roadmaps.length-1];
         res.status(201).json({success:true, data:createdRoadmap});
+    }
+    catch(error){
+        next(error);
+    }
+}
+
+export const deleteRoadmap: RequestHandler<{roadmapId:string}> = async(req, res, next)=>{
+    try{
+        // const userId = req.user.userId;
+        const userId = (req as any).user.userId;
+        const {roadmapId} = req.params;
+        const result = await UserModel.updateOne(
+            {_id:userId},
+            {$pull: {roadmaps:{_id:roadmapId}}}
+        );
+        if(result.modifiedCount===0){
+            throw new ErrorWithStatus("Roadmap not found or user not authorized to delete", 404);
+        }
+        res.status(200).json({success:true, data:{message:"Roadmap deleted successfully"}});
     }
     catch(error){
         next(error);
