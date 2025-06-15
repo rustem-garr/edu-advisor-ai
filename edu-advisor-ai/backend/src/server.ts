@@ -5,9 +5,6 @@ import mongoose from 'mongoose';
 import userRoutes from './users/user.routes';
 import { errorHandler, routerNotFoundHandler } from './utils/common';
 
-
-dotenv.config();
-
 const app = express();
 const port = process.env.PORT || 3001;
 
