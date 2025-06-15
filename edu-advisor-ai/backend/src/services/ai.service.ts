@@ -6,8 +6,8 @@ const openai = new OpenAI();
 export const findRelevantContext = async(query:string, limit: number=3)=>{
     try{
         const embeddingResponse = await openai.embeddings.create({
-        model: "text-embedding-3-small",
-        input: query,
+            model: "text-embedding-3-small",
+            input: query,
         });
         const queryVector = embeddingResponse.data[0].embedding;
 

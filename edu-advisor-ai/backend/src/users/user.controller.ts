@@ -1,9 +1,10 @@
 import { RequestHandler } from "express";
 import bcrypt from 'bcryptjs';
-import { AddRoadmapBody, Roadmap, UserModel } from "./user.model";
+import { AddRoadmapBody, UserModel } from "./user.model";
 import jwt from "jsonwebtoken";
 import { UserCredentials, AuthTokens, StandardResponse, ErrorWithStatus } from "../utils/common";
 import {OpenAI} from 'openai';
+import { findRelevantContext } from "../services/ai.service";
 
 export const registerUser: RequestHandler<unknown, StandardResponse<{ message: string }>, UserCredentials, unknown> = async (req, res, next) => {
     try {
@@ -136,15 +137,21 @@ export const generateRoadmapSteps:RequestHandler<{roadmapId: string}> = async(re
             throw new ErrorWithStatus('Roadmap not found for this user', 404);
         }
         const openai = new OpenAI();
-        const systemPrompt = `You are EduAdvisor AI, an expert academic advisor. 
-        Your goal is to create a detailed, step-by-step learning roadmap. 
-        Provide the output as a valid JSON object containing a single key "steps". 
-        The value of "steps" should be an array of objects, 
-        where each object has "stepNumber", "title", and "description".`;
 
-        const userPrompt = `Create a learning roadmap on the topic: 
-        ${roadmap.topic} for a user whose experience 
-        level is ${roadmap.userInput?.experienceLevel}`;
+        console.log(`Searching for context on topic: ${roadmap.topic}`);
+        const context = await findRelevantContext(roadmap.topic);
+        console.log("Found context:", context);
+
+        const systemPrompt = `You are EduAdvisor AI, an expert academic advisor. 
+        Your goal is to create a detailed, step-by-step learning roadmap based *only* 
+        on the provided context. Do not use any outside knowledge. 
+        If the context is empty or irrelevant, you must state that you cannot create 
+        a roadmap on this topic. 
+        Format the output as a valid JSON object with a single key "steps", 
+        containing an array of objects with "stepNumber", "title", and "description".`;
+
+        const userPrompt = `CONTEXT: ${context} QUESTION: Create a learning roadmap 
+        on the topic: ${roadmap.topic} ${roadmap.userInput?.experienceLevel}.`;
 
         const response = await openai.chat.completions.create({
             model:"gpt-4o-mini",
