@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { AddRoadmapBody, Roadmap, UserModel } from "./user.model";
 import jwt from "jsonwebtoken";
 import { UserCredentials, AuthTokens, StandardResponse, ErrorWithStatus } from "../utils/common";
+import {OpenAI} from 'openai';
 
 export const registerUser: RequestHandler<unknown, StandardResponse<{ message: string }>, UserCredentials, unknown> = async (req, res, next) => {
     try {
@@ -114,6 +115,56 @@ export const deleteRoadmap: RequestHandler<{roadmapId:string}> = async(req, res,
             throw new ErrorWithStatus("Roadmap not found or user not authorized to delete", 404);
         }
         res.status(200).json({success:true, data:{message:"Roadmap deleted successfully"}});
+    }
+    catch(error){
+        next(error);
+    }
+}
+
+export const generateRoadmapSteps:RequestHandler<{roadmapId: string}> = async(req, res, next)=>{
+    try{
+        // const userId = req.user?.userId;
+        const userId = (req as any).user.userId;
+        const {roadmapId}=req.params;
+
+        const user = await UserModel.findOne({_id:userId});
+        if(!user){
+            throw new ErrorWithStatus('User not found', 404);
+        }
+        const roadmap = user.roadmaps.id(roadmapId);
+        if(!roadmap){
+            throw new ErrorWithStatus('Roadmap not found for this user', 404);
+        }
+        const openai = new OpenAI();
+        const systemPrompt = `You are EduAdvisor AI, an expert academic advisor. 
+        Your goal is to create a detailed, step-by-step learning roadmap. 
+        Provide the output as a valid JSON object containing a single key "steps". 
+        The value of "steps" should be an array of objects, 
+        where each object has "stepNumber", "title", and "description".`;
+
+        const userPrompt = `Create a learning roadmap on the topic: 
+        ${roadmap.topic} for a user whose experience 
+        level is ${roadmap.userInput?.experienceLevel}`;
+
+        const response = await openai.chat.completions.create({
+            model:"gpt-4o-mini",
+            messages:[
+                {role:"system", content:systemPrompt},
+                {role:"user", content:userPrompt}
+            ],
+            response_format:{type:'json_object'}
+        });
+
+        if(response.choices[0].message.content){
+            const aiResponse = JSON.parse(response.choices[0].message.content);
+            roadmap.steps = aiResponse.steps;
+            await user.save();
+        }
+        else{
+            throw new ErrorWithStatus('AI failed to generate roadmap steps', 500);
+        }
+        res.status(200).json({success:true, data:roadmap});
+
     }
     catch(error){
         next(error);
