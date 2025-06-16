@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
-import { AuthResponse, User } from '../interfaces/user.interface';
+import { AuthData, StandardResponse, User } from '../interfaces/user.interface';
 import {tap} from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -27,15 +27,18 @@ export class Auth {
     }
   });
 
-  login(credentials: Partial<{email:string, password:string}>){
-    return this.#http.post<AuthResponse>(`${this.#baseUrl}/login`, credentials).pipe(
-      tap(response=>{
-        localStorage.setItem(TOKEN_KEY, response.accessToken);
-        const user: User = {_id: 'temp_id', email: credentials.email!};
+   login(credentials: { email: string, password: string }) {
+    return this.#http.post<StandardResponse<AuthData>>(`${this.#baseUrl}/login`, credentials).pipe(
+      tap(response => {
+        const accessToken = response.data.accessToken;
+
+        localStorage.setItem(TOKEN_KEY, accessToken);
+
+        const user: User = { _id: 'temp_id', email: credentials.email };
         localStorage.setItem(USER_KEY, JSON.stringify(user));
         this.currentUser.set(user);
       })
-    )
+    );
   }
 
   logout(){
@@ -44,7 +47,7 @@ export class Auth {
     this.currentUser.set(null);
   }
 
-  register(credentials:Partial<{email:string, password:string}>){
+  register(credentials:{email:string, password:string}){
     return this.#http.post<{message:string}>(`${this.#baseUrl}/register`, credentials);
   }
 

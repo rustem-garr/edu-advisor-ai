@@ -3,7 +3,12 @@ export interface User{
     email:string
 }
 
-export interface AuthResponse {
+export interface AuthData {
     accessToken:string,
     refreshToken:string
+}
+
+export interface StandardResponse<T> {
+  success: boolean;
+  data: T;
 }
