@@ -11,7 +11,8 @@ export const routes: Routes = [
     { path:'signup', component: Signup },
     { path: 'dashboard', component: Dashboard, canActivate: [authGuard] },
     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-    { path:'**', redirectTo: 'dashboard' },
     { path:'roadmaps/create', component:RoadmapCreate, canActivate: [authGuard]},
-    { path: 'roadmaps/:id', component:RoadmapDetail, canActivate: [authGuard]}
+    { path: 'roadmaps/:id', component:RoadmapDetail, canActivate: [authGuard]},
+
+    { path:'**', redirectTo: 'dashboard' }, // always last, reminder for myself 
 ];

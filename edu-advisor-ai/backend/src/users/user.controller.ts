@@ -177,3 +177,25 @@ export const generateRoadmapSteps:RequestHandler<{roadmapId: string}> = async(re
         next(error);
     }
 }
+
+export const getRoadmapById: RequestHandler<{roadmapId:string}> = async(req, res, next)=>{
+    try{
+        const userId = req.user?.userId;
+        const {roadmapId} = req.params;
+
+        const user = await UserModel.findById(userId).select('roadmaps');
+        if(!user){
+            throw new ErrorWithStatus("User not found", 404);
+        }
+
+        const roadmap = user.roadmaps.id(roadmapId);
+        if(!roadmap){
+            throw new ErrorWithStatus("Roadmap not found", 404);
+        }
+        
+        res.status(200).json({success: true, data: roadmap});
+    }
+    catch(error){
+        next(error);
+    }
+}
