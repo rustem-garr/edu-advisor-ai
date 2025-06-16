@@ -8,10 +8,12 @@ import { MatCardModule } from '@angular/material/card';
 import {MatListModule} from "@angular/material/list";
 import {MatIconModule} from "@angular/material/icon";
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, MatButtonModule, MatCardModule, MatListModule, MatIconModule],
+  imports: [CommonModule, MatButtonModule, MatCardModule, MatListModule, 
+    MatIconModule, RouterLink],
   template: `
    <div class="container">
       <mat-card>
@@ -19,7 +21,7 @@ import { CommonModule } from '@angular/common';
         <mat-card-subtitle>Manage your learning roadmaps</mat-card-subtitle>
 
         <mat-card-actions>
-          <button mat-flat-button color="primary">Create New Roadmap</button>
+          <button mat-flat-button color="primary" routerLink="/roadmaps/create">Create New Roadmap</button>
           <button mat-button color="warn" (click)="authService.logout()">Logout</button>
         </mat-card-actions>
 
