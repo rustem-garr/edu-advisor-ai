@@ -17,5 +17,9 @@ export class RoadmapService {
     );
   }
 
+  deleteRoadmap(id:string){
+    return this.#http.delete<StandardResponse<{message:string}>>(`${this.#baseUrl}/${id}`);
+  }
+
   constructor() { }
 }
