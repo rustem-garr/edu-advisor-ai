@@ -11,3 +11,11 @@ export interface Roadmap {
     createdAt:Date,
     updatedAt:Date
 }
+
+export interface CreateRoadmapPayload {
+    topic:string, 
+    userInput: {
+        experienceLevel: string,
+        learningStyle: string,
+    }
+}
