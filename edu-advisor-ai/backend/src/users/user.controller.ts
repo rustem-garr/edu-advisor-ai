@@ -180,7 +180,8 @@ export const generateRoadmapSteps:RequestHandler<{roadmapId: string}> = async(re
 
 export const getRoadmapById: RequestHandler<{roadmapId:string}> = async(req, res, next)=>{
     try{
-        const userId = req.user?.userId;
+        // const userId = req.user?.userId;
+        const userId = (req as any).user.userId;
         const {roadmapId} = req.params;
 
         const user = await UserModel.findById(userId).select('roadmaps');
