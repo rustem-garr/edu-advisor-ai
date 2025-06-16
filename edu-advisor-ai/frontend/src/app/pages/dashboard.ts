@@ -32,6 +32,11 @@ import { CommonModule } from '@angular/common';
                   <span matListItemTitle>{{ roadmap.topic }}</span>
                   <span matListItemLine>Level: {{ roadmap.userInput.experienceLevel }}</span>
                   <span matListItemLine>Style: {{ roadmap.userInput.learningStyle }}</span>
+                
+                  <button mat-icon-button (click)="onDelete(roadmap._id.toString())" aria-label="Delete roadmap">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                
                 </mat-list-item>
               }
             </mat-list>
@@ -67,5 +72,19 @@ export class Dashboard {
         console.error('Failed to load roadmaps', err);
       }
     })
+  }
+
+  onDelete(id:string):void{
+    if(confirm('Are you sure you want to delete this roadmap?')){
+      this.#roadmapService.deleteRoadmap(id).subscribe({
+        next: ()=>{
+          this.roadmaps.update(currentRoadmaps=>
+            currentRoadmaps.filter(r=>r._id.toString()!==id)
+          );
+          console.log("Roadmap deleted successfully");
+        },
+        error: (err)=> console.error("Failed to delete roadmap", err)
+      });
+    }
   }
 }
