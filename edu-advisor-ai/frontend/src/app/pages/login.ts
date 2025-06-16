@@ -6,6 +6,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
+import { MatCardActions } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -39,6 +40,9 @@ import { CommonModule } from '@angular/common';
             <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.valid">Login</button>
           </form>
         </mat-card-content>
+        <mat-card-actions align="end">
+          <a routerLink="/signup">Don't have an account? Sign Up</a>
+        </mat-card-actions>
       </mat-card>
     </div>
   `,
