@@ -23,6 +23,18 @@ export class RoadmapService {
     );
   }
 
+  getRoadmapById(id:string){
+    return this.#http.get<StandardResponse<Roadmap>>(`${this.#baseUrl}/${id}`).pipe(
+      map(response=>response.data)
+    )
+  }
+
+  generateSteps(id:string){
+    return this.#http.post<StandardResponse<Roadmap>>(`${this.#baseUrl}/${id}/generate`, {}).pipe(
+      map(response=>response.data)
+    )
+  }
+
   deleteRoadmap(id:string){
     return this.#http.delete<StandardResponse<{message:string}>>(`${this.#baseUrl}/${id}`);
   }
