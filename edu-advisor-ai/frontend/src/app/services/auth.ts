@@ -13,7 +13,7 @@ export class Auth {
   currentUser = signal<User | null | undefined>(undefined);
   isAuthenticated = computed(()=>!this.currentUser());
 
-  login(credentials: {email:string, password:string}){
+  login(credentials: Partial<{email:string, password:string}>){
     return this.#http.post<AuthResponse>(`${this.#baseUrl}/login`, credentials).pipe(
       tap(response=>{
         console.log('Access token:', response.accessToken);
@@ -21,7 +21,7 @@ export class Auth {
     )
   }
 
-  register(credentials:{email:string, password:string}){
+  register(credentials:Partial<{email:string, password:string}>){
     return this.#http.post<{message:string}>(`${this.#baseUrl}/register`, credentials);
   }
 
