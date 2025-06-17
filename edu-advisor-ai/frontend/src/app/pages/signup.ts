@@ -31,42 +31,57 @@ export const passwordMatchValidator: ValidatorFn = (control:AbstractControl):Val
     MatInputModule,
     MatButtonModule
   ],
-  template: `
-     <div class="container">
-      <mat-card>
-        <mat-card-title>Sign Up</mat-card-title>
-        <mat-card-content>
-          <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
-            <mat-form-field appearance="outline">
-              <mat-label>Email</mat-label>
-              <input matInput formControlName="email" type="email" placeholder="Enter your email">
-            </mat-form-field>
+ template: `
+    <div class="auth-container">
+      <div class="auth-card">
+        <h1 class="app-title">EduAdvisor AI</h1>
+        
+        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <div class="input-wrapper">
+               <svg class="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 4.5H22.5V19.5H1.5V4.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M1.5 4.5L12 12.75L22.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              <input id="email" formControlName="email" type="email" placeholder="you@example.com">
+            </div>
+          </div>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Password</mat-label>
-              <input matInput formControlName="password" type="password" placeholder="Enter your password">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Confirm Password</mat-label>
-              <input matInput formControlName="confirmPassword" type="password" placeholder="Confirm your password">
-              @if(signupForm.hasError('passwordsMismatch')) {
-                <mat-error>Passwords do not match</mat-error>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="input-wrapper">
+               <svg class="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.25 11.25V8.25C8.25 6.25736 9.92421 4.5 12 4.5C14.0758 4.5 15.75 6.25736 15.75 8.25V11.25M6 11.25H18V21H6V11.25Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              <input id="password" formControlName="password" type="password" placeholder="Create a password">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <div class="input-wrapper">
+               <svg class="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.25 11.25V8.25C8.25 6.25736 9.92421 4.5 12 4.5C14.0758 4.5 15.75 6.25736 15.75 8.25V11.25M6 11.25H18V21H6V11.25Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              <input id="confirmPassword" formControlName="confirmPassword" type="password" placeholder="Confirm your password">
+            </div>
+             @if(signupForm.get('confirmPassword')?.touched && signupForm.hasError('passwordsMismatch')) {
+                <p class="error-text">Passwords do not match</p>
               }
-            </mat-form-field>
+          </div>
 
-            <button mat-raised-button color="primary" type="submit" [disabled]="!signupForm.valid">
-              Sign Up
-            </button>
-          </form>
-        </mat-card-content>
-        <mat-card-actions align="end">
-            <a routerLink="/login">Already have an account? Login</a>
-        </mat-card-actions>
-      </mat-card>
+          <button class="submit-button" type="submit" [disabled]="!signupForm.valid">
+            Sign Up
+          </button>
+        </form>
+        
+        <p class="auth-link">
+          Already have an account? <a routerLink="/login">Login</a>
+        </p>
+      </div>
+
+      <div class="footer-credit">
+        Developed by Rustem Garr
+      </div>
     </div>
   `,
-  styles: ``
+  styles: [`
+    @import '../styles/auth.styles.css';
+    `]
 })
 export class Signup {
   #fb = inject(FormBuilder);

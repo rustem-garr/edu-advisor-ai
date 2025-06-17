@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Auth} from '../services/auth';
+import { RouterLink } from '@angular/router';
 
 import {MatCardModule} from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -11,59 +12,48 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule],
-  template: `
-    <div class="login-container">
-      <mat-card>
-        <mat-card-title>Login</mat-card-title>
-        <mat-card-content>
-          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-            <mat-form-field appearance="outline">
-              <mat-label>Email</mat-label>
-              <input type="email" matInput formControlName = "email" placeholder="Enter your email">
-              @if(loginForm.get('email')?.hasError('required')){
-                <mat-error>Email is required</mat-error>
-              }
-              @if(loginForm.get('email')?.hasError('email')){
-                <mat-error>Please enter a valid email</mat-error>
-              }
-            </mat-form-field>
-            
-            <mat-form-field appearance="outline">
-              <mat-label>Password</mat-label>
-              <input type="password" matInput formControlName = "password" placeholder="Enter your password">
-              @if(loginForm.get('password')?.hasError('required')){
-                <mat-error>Password is required</mat-error>
-              }
-            </mat-form-field>
-            
-            <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.valid">Login</button>
-          </form>
-        </mat-card-content>
-        <mat-card-actions align="end">
-          <a routerLink="/signup">Don't have an account? Sign Up</a>
-        </mat-card-actions>
-      </mat-card>
+  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, RouterLink],
+    template: `
+    <div class="auth-container">
+      <div class="auth-card">
+        <h1 class="app-title">EduAdvisor AI</h1>
+        
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 4.5H22.5V19.5H1.5V4.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M1.5 4.5L12 12.75L22.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              <input id="email" formControlName="email" type="email" placeholder="you@example.com">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.25 11.25V8.25C8.25 6.25736 9.92421 4.5 12 4.5C14.0758 4.5 15.75 6.25736 15.75 8.25V11.25M6 11.25H18V21H6V11.25Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              <input id="password" formControlName="password" type="password" placeholder="********">
+            </div>
+          </div>
+
+          <button class="submit-button" type="submit" [disabled]="!loginForm.valid">
+            Login
+          </button>
+        </form>
+        
+        <p class="auth-link">
+          Don't have an account? <a routerLink="/signup">Sign Up</a>
+        </p>
+      </div>
+
+      <div class="footer-credit">
+        &copy; Developed by Rustem Garr 
+      </div>
     </div>
   `,
   styles: [`
-    .login-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    mat-card {
-      width: 100%;
-      max-width: 400px;
-    }
-    mat-form-field {
-      width: 100%;
-    }
-    button {
-      width: 100%;
-    }
-    `]
+  @import '../styles/auth.styles.css';
+  `]
+  
 })
 export class Login {
   #fb = inject(FormBuilder);

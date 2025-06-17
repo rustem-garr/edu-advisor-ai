@@ -22,50 +22,54 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatCheckboxModule
   ],
   template: `
-    <div class="container">
+   <div class="detail-container">
       @if (roadmap()) {
         <mat-card>
-          <mat-card-title>{{ roadmap()?.topic }}</mat-card-title>
-          <mat-card-subtitle>
-            Level: {{ roadmap()?.userInput?.experienceLevel }} | 
-            Style: {{ roadmap()?.userInput?.learningStyle }}
-          </mat-card-subtitle>
+          <mat-card-header>
+              <mat-card-title style="color:blue">{{ roadmap()?.topic }}</mat-card-title>
+              <mat-card-subtitle>
+                Level: {{ roadmap()?.userInput?.experienceLevel }} | 
+                Style: {{ roadmap()?.userInput?.learningStyle }}
+              </mat-card-subtitle>
+          </mat-card-header>
 
           <mat-card-content>
-            <h3>Learning Steps</h3>
+            @if (isLoading()) {
+              <div class="loading-container">
+                <p>EduAdvisor AI is generating your personalized roadmap...</p>
+                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+              </div>
+            }
+
             @if (hasSteps()) {
-              <mat-list>
+              <mat-list role="list">
                 @for (step of roadmap()?.steps; track step._id) {
-                  <mat-list-item>
-                    <mat-checkbox matListItemAvatar class="step-checkbox"></mat-checkbox>
-                    <span matListItemTitle>{{ step.stepNumber }}. {{ step.title }}</span>
-                    <span matListItemLine>{{ step.description }}</span>
+                  <mat-list-item role="listitem" class="step-item">
+                    <mat-checkbox matListItemAvatar class="step-checkbox" [checked]="step.isCompleted">
+                    </mat-checkbox>
+                    <div matListItemTitle class="step-title">{{ step.stepNumber }}. {{ step.title }}</div>
+                    <div matListItemLine class="step-description">{{ step.description }}</div>
                   </mat-list-item>
                 }
               </mat-list>
-            } @else {
-              <p>This roadmap has no steps yet.</p>
-              @if (!isLoading()) {
+            } @else if (!isLoading()) {
+              <div class="generate-container">
+                <p>This roadmap is empty. Let's create your learning path!</p>
                 <button mat-raised-button color="primary" (click)="onGenerateSteps()">
+                  <mat-icon>auto_awesome</mat-icon>
                   Generate Steps with AI
                 </button>
-              }
-            }
-
-            @if (isLoading()) {
-              <p>EduAdvisor AI is thinking...</p>
-              <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+              </div>
             }
           </mat-card-content>
         </mat-card>
-      } @else {
-        <p>Loading roadmap...</p>
+      } @else if (!isLoading()) {
+        <p>Loading roadmap details...</p>
       }
     </div>
   `,
   styles: [`
-    .container { padding: 2rem; }
-    .step-checkbox { margin-right: 16px; }
+    @import '../styles/roadmap-detail.style.css';
   `]
 })
 export class RoadmapDetail implements OnInit {

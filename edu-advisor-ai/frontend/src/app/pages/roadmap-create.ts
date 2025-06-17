@@ -8,25 +8,24 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
-import { validateHorizontalPosition } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-roadmap-create',
   imports: [ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, 
     MatButtonModule, MatSelectModule],
   template: `
-    <div class="container">
+    <div class="create-container">
       <mat-card>
-        <mat-card-title>Roadmap Builder</mat-card-title>
+        <h2 style="text-align:center; color:blue">Tell AI what you want to learn...</h2>
         <mat-card-content>
           <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <mat-form-field appearance="outline">
               <mat-label>What do you want to master?</mat-label>
-              <input matInput formControlName="topic" placeholder="e.g., Learn Python...">
+              <input matInput formControlName="topic" placeholder="e.g., Learn Python for Data Science">
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Experience Level</mat-label>
+              <mat-label>Your Current Experience Level</mat-label>
               <mat-select formControlName="experienceLevel">
                 <mat-option value="Beginner">Beginner</mat-option>
                 <mat-option value="Intermediate">Intermediate</mat-option>
@@ -35,10 +34,10 @@ import { validateHorizontalPosition } from '@angular/cdk/overlay';
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Preferred Learning Style</mat-label>
+              <mat-label>Your Preferred Learning Style</mat-label>
               <mat-select formControlName="learningStyle">
                 <mat-option value="Video Tutorials">Video Tutorials</mat-option>
-                <mat-option value="Reading Docs">Reading Official Docs</mat-option>
+                <mat-option value="Reading Official Docs">Reading Official Docs</mat-option>
                 <mat-option value="Hands-on Projects">Hands-on Projects</mat-option>
               </mat-select>
             </mat-form-field>
@@ -51,7 +50,9 @@ import { validateHorizontalPosition } from '@angular/cdk/overlay';
       </mat-card>
     </div>
   `,
-  styles: ``
+  styles: [`
+    @import '../styles/roadmap.style.css';
+    `]
 })
 export class RoadmapCreate {
   #fb=inject(FormBuilder);

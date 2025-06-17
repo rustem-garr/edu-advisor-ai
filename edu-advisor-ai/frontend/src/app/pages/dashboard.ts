@@ -15,43 +15,41 @@ import { RouterLink } from '@angular/router';
   imports: [CommonModule, MatButtonModule, MatCardModule, MatListModule, 
     MatIconModule, RouterLink],
   template: `
-   <div class="container">
-      <mat-card>
-        <mat-card-title>Your Dashboard</mat-card-title>
-        <mat-card-subtitle>Manage your learning roadmaps</mat-card-subtitle>
-
-        <mat-card-actions>
-          <button mat-flat-button color="primary" routerLink="/roadmaps/create">Create New Roadmap</button>
-          <button mat-button color="warn" (click)="authService.logout()">Logout</button>
-        </mat-card-actions>
-
-        <mat-card-content>
-          <h2>My Roadmaps</h2>
-          @if (roadmaps().length > 0) {
-            <mat-list role="list">
-              @for (roadmap of roadmaps(); track roadmap._id) {
-                <mat-list-item role="listitem">
-                  <span matListItemTitle>{{ roadmap.topic }}</span>
-                  <span matListItemLine>Level: {{ roadmap.userInput.experienceLevel }}</span>
-                  <span matListItemLine>Style: {{ roadmap.userInput.learningStyle }}</span>
-                
-                  <button mat-icon-button (click)="onDelete(roadmap._id.toString())" aria-label="Delete roadmap">
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                
-                </mat-list-item>
-              }
-            </mat-list>
-          } @else {
-            <p>You haven't created any roadmaps yet. Get started!</p>
-          }
-        </mat-card-content>
-      </mat-card>
+    <div class="dashboard-header">
+      <div>
+        <p class="subtitle">Dashboard - manage your learning roadmaps</p>
+      </div>
+      <div class="actions">
+        <button mat-flat-button color="primary" routerLink="/roadmaps/create">Create New Roadmap</button>
+        <button mat-button (click)="authService.logout()">Logout</button>
+      </div>
     </div>
+
+    <h2>My Roadmaps</h2>
+    @if (roadmaps().length > 0) {
+      <div class="roadmap-grid">
+        @for (roadmap of roadmaps(); track roadmap._id) {
+          <mat-card class="roadmap-card" [routerLink]="['/roadmaps', roadmap._id.toString()]">
+            <mat-card-header>
+              <mat-card-title style="color:blue">{{ roadmap.topic }}</mat-card-title>
+              <mat-card-subtitle>
+                Level: {{ roadmap.userInput.experienceLevel }} | Style: {{ roadmap.userInput.learningStyle }}
+              </mat-card-subtitle>
+            </mat-card-header>
+            
+             <button mat-icon-button (click)="onDelete($event, roadmap._id.toString())" aria-label="Delete roadmap">
+                    <mat-icon>delete</mat-icon>
+              </button>
+          </mat-card>
+        }
+      </div>
+    } @else {
+      <p class="no-roadmaps-message">You haven't created any roadmaps yet. Click "Create New Roadmap" to get started!</p>
+    }
   `,
+ 
   styles: [`
-    .container { padding: 2rem; }
-    mat-card-actions { margin-bottom: 1rem; }
+   @import '../styles/dashboard.style.css';
   `]
 })
 export class Dashboard {
@@ -76,7 +74,8 @@ export class Dashboard {
     })
   }
 
-  onDelete(id:string):void{
+  onDelete(event:MouseEvent, id:string):void{
+    event.stopPropagation();
     if(confirm('Are you sure you want to delete this roadmap?')){
       this.#roadmapService.deleteRoadmap(id).subscribe({
         next: ()=>{

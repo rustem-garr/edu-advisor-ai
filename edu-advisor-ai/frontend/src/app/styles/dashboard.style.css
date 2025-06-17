@@ -1,0 +1,57 @@
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+}
+.subtitle {
+  color: #718096;
+  margin-top: 0.25rem;
+}
+.actions button {
+  margin-left: 1rem;
+}
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+}
+.roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(327px, 1fr));
+  gap: 1.5rem;
+  
+}
+.roadmap-card {
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  position: relative; 
+  background-color:white;
+}
+.roadmap-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+}
+.delete-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  color: #a0aec0;
+}
+.delete-button:hover {
+  color: #e53e3e; 
+}
+.no-roadmaps-message {
+  background-color: #e2e8f0;
+  padding: 2rem;
+  text-align: center;
+  border-radius: 8px;
+  color: #4a5568;
+}

@@ -1,0 +1,63 @@
+.detail-container {
+    display: flex;
+    justify-content: center;
+}
+
+mat-card {
+    width: 100%;
+    max-width: 900px;
+    background-color: white;
+}
+
+mat-card-header {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+mat-card-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 1.5rem 0 1rem;
+}
+
+.loading-container, .generate-container {
+    text-align: center;
+    padding: 2rem;
+    background-color: #f8fafc;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.loading-container p, .generate-container p {
+    margin: 0 0 1rem;
+    color: #4a5568;
+}
+
+.step-item {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1rem 0;
+    height: auto !important; 
+}
+
+.step-item:last-child {
+    border-bottom: none;
+}
+
+.step-checkbox {
+    margin-right: 16px;
+}
+
+.step-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.step-description {
+    white-space: normal; 
+    color: #718096;
+}
