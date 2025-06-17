@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import {Auth} from '../services/auth';
 import { RoadmapService } from '../services/roadmap-service';
 import { Roadmap } from '../interfaces/roadmap.interface';
+import { Title } from '@angular/platform-browser'; 
 
 import {MatButtonModule} from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -55,10 +56,12 @@ import { RouterLink } from '@angular/router';
 export class Dashboard {
   authService = inject(Auth);
   #roadmapService = inject(RoadmapService);
+  #titleService = inject(Title);
 
   roadmaps = signal<Roadmap[]>([]);
 
   ngOnInit():void{
+    this.#titleService.setTitle('EduAdvisor AI - Dashboard')
     this.loadRoadmaps();
   }
 

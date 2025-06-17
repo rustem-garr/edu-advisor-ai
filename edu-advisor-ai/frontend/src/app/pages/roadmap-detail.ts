@@ -2,6 +2,7 @@ import { Component, Input, OnInit, computed, inject, signal } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { RoadmapService } from '../services/roadmap-service';
 import { Roadmap } from '../interfaces/roadmap.interface';
+import { Title } from '@angular/platform-browser';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -76,6 +77,7 @@ export class RoadmapDetail implements OnInit {
   @Input() id!: string;
 
   private roadmapService = inject(RoadmapService);
+  #titleService = inject(Title);
 
   roadmap = signal<Roadmap | null>(null);
   isLoading = signal<boolean>(false);
@@ -83,6 +85,7 @@ export class RoadmapDetail implements OnInit {
   hasSteps = computed(() => (this.roadmap()?.steps?.length ?? 0) > 0);
 
   ngOnInit(): void {
+    this.#titleService.setTitle('Roadmap Detail - EduAdvisor AI')
     this.roadmapService.getRoadmapById(this.id).subscribe({
       next: (data) => this.roadmap.set(data)
     });

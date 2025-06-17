@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Auth} from '../services/auth';
 import { RouterLink } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 
 import {MatCardModule} from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -58,6 +59,7 @@ import { CommonModule } from '@angular/common';
 export class Login {
   #fb = inject(FormBuilder);
   #authService = inject(Auth);
+  #titleService = inject(Title);
 
   loginForm = this.#fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -79,5 +81,9 @@ export class Login {
         }
       })
     }
+  }
+
+  constructor() {
+    this.#titleService.setTitle('Login - EduAdvisor AI');
   }
 }

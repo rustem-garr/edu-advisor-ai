@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RoadmapService } from '../services/roadmap-service';
+import { Title } from '@angular/platform-browser';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -58,6 +59,7 @@ export class RoadmapCreate {
   #fb=inject(FormBuilder);
   router = inject(Router);
   #roadmapService = inject(RoadmapService);
+  #titleService = inject(Title);
 
   form = this.#fb.group({
     topic: ['', [Validators.required]],
@@ -84,5 +86,8 @@ export class RoadmapCreate {
         error: (err) => console.error("Failed to create roadmap", err)
       });
     }
+  }
+  constructor() {
+    this.#titleService.setTitle('Create Roadmap - EduAdvisor AI');
   }
 }
