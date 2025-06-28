@@ -1,4 +1,5 @@
 import { ErrorRequestHandler, RequestHandler } from "express";
+import { User } from "../users/user.model";
 
 export type UserCredentials = {
     email: string;
@@ -13,6 +14,7 @@ export type UserPayload = {
 export type AuthTokens = {
     accessToken: string;
     refreshToken: string;
+    user: User
 };
 
 // wrapper for all successful JSON responses.

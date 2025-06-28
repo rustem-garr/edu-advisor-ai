@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import bcrypt from 'bcryptjs';
-import { AddRoadmapBody, UserModel } from "./user.model";
+import { AddRoadmapBody, User, UserModel } from "./user.model";
 import jwt from "jsonwebtoken";
 import { UserCredentials, AuthTokens, StandardResponse, ErrorWithStatus } from "../utils/common";
 import {OpenAI} from 'openai';
@@ -20,7 +20,7 @@ export const registerUser: RequestHandler<unknown, StandardResponse<{ message: s
 
         await UserModel.create({
             email,
-            password: hashedPassword
+            password: hashedPassword, 
         });
 
         res.status(201).json({ success: true, data: { message: 'User registered successfully' } });
@@ -56,7 +56,12 @@ export const loginUser: RequestHandler<unknown, StandardResponse<AuthTokens>, Us
             { expiresIn: '7d' }
         );
 
-        res.status(200).json({ success: true, data: { accessToken, refreshToken } });
+        const userPayload: User = {
+            _id: user._id,
+            email: user.email
+        }
+
+        res.status(200).json({ success: true, data: { accessToken, refreshToken, user:userPayload } });
 
     } catch (error) {
         next(error);

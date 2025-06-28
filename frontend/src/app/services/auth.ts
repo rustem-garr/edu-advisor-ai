@@ -18,23 +18,13 @@ export class Auth {
   currentUser = signal<User | null | undefined>(this.#getStoredUser());
   isAuthenticated = computed(()=>!!this.currentUser());
 
-  authEffect = effect(()=>{
-    if(this.isAuthenticated()){
-      this.#router.navigate(['/dashboard']);
-    }
-    else{
-      this.#router.navigate(['/login']);
-    }
-  });
 
-   login(credentials: { email: string, password: string }) {
+  login(credentials: { email: string, password: string }) {
     return this.#http.post<StandardResponse<AuthData>>(`${this.#baseUrl}/login`, credentials).pipe(
       tap(response => {
-        const accessToken = response.data.accessToken;
+        const {accessToken, user} = response.data;
 
         localStorage.setItem(TOKEN_KEY, accessToken);
-
-        const user: User = { _id: 'temp_id', email: credentials.email };
         localStorage.setItem(USER_KEY, JSON.stringify(user));
         this.currentUser.set(user);
       })
@@ -45,6 +35,7 @@ export class Auth {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
     this.currentUser.set(null);
+    this.#router.navigate(['/login']);
   }
 
   register(credentials:{email:string, password:string}){

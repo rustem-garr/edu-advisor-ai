@@ -50,6 +50,10 @@ const userSchema = new Schema({
     timestamps: true
 });
 
+export interface User {
+    _id: Types.ObjectId,
+    email:string
+}
 
 export const UserModel =  model("User", userSchema);
 

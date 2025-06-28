@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Auth} from '../services/auth';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
 import {MatCardModule} from '@angular/material/card';
@@ -60,6 +60,7 @@ export class Login {
   #fb = inject(FormBuilder);
   #authService = inject(Auth);
   #titleService = inject(Title);
+  #router = inject(Router);
 
   loginForm = this.#fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -74,7 +75,8 @@ export class Login {
       }
       this.#authService.login(credentials).subscribe({
         next: (response) => {
-          console.log('Login successful', response)
+          console.log('Login successful', response);
+          this.#router.navigate(['/dashboard'])
         },
         error:(err)=>{
           console.error("Login failed",err);
