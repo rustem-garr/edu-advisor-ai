@@ -77,7 +77,9 @@ Users simply specify their learning objective and current experience level. The 
 1️⃣ Clone the repository:
 
 ```bash
-git clone <your-repo-link>
+git clone <your-repo-link-if-forked-repo> 
+or 
+git clone https://github.com/rustem-garr/edu-advisor-ai.git 
 cd edu-advisor-ai
 
 2️⃣ Setup the Backend:
